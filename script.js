@@ -15,7 +15,7 @@ const CONFIG = {
   tiktok: "",
   heroVideo: "media/hero.mp4",        // e.g. "media/hero.mp4" (muted loop behind the hero)
   heroImage: "media/hero.jpg",        // fallback/poster, e.g. "media/hero.jpg"
-  featureImages: { wedding: "media/wedding.mp4", quince: "https://images.unsplash.com/photo-1763959944953-d8f723c34bff?auto=format&fit=crop&w=1200&q=70", private: "media/gallery/disco-party.jpg" }, // e.g. "media/wedding.jpg"
+  featureImages: { wedding: "media/wedding.mp4", quince: "media/quince.mp4", private: "media/gallery/disco-party.jpg" }, // e.g. "media/wedding.jpg"
 };
 
 /* Gallery: replace `src` with real photos in media/ (type: wedding | quince | night | production) */
