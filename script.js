@@ -78,7 +78,8 @@ const SERVICES = [
 
 const FORM_SERVICES = [
   ["DJ", "DJ"], ["MC", "MC"], ["Sound system", "Sonido"], ["Lighting", "Iluminación"],
-  ["Ceremony audio", "Audio de ceremonia"], ["Cold sparks", "Chispas frías"], ["CO₂ effects", "Efectos CO₂"],
+  ["Ceremony audio", "Audio de ceremonia"], ["Uplighting", "Uplighting"], ["Dancing on the Clouds", "Bailando en las nubes"],
+  ["Cold sparks", "Chispas frías"], ["CO₂ effects", "Cañón de CO₂"],
   ["360 photo booth", "Cabina 360"], ["Event promotion", "Promoción de evento"], ["Not sure yet", "Aún no sé"],
 ];
 
@@ -261,6 +262,8 @@ $("#langBtn").addEventListener("click", () => {
 
 /* Buttons with data-type pre-select the event type in the form */
 document.addEventListener("click", (e) => {
+  const s = e.target.closest("a[data-svc]");
+  if (s) $$(`#svcChecks input[value="${s.dataset.svc}"]`).forEach((i) => (i.checked = true));
   const b = e.target.closest("a[data-type]"); if (!b) return;
   if ($("#eventType")) $("#eventType").value = b.dataset.type;
 });
