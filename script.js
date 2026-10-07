@@ -64,7 +64,7 @@ const ICONS = {
 };
 
 const SERVICES = [
-  { ic: "ring",  wide: true, href: "#weddings", en: ["Wedding DJ & MC", "Music coordination, announcements, introductions, dances and reception entertainment."], es: ["DJ y MC para bodas", "Coordinación musical, anuncios, presentaciones, bailes y entretenimiento de recepción."], price: ["Package from $2,000", "Paquete desde $2,000"] },
+  { ic: "ring",  wide: true, href: "#weddings", en: ["Wedding DJ & MC", "Music coordination, announcements, introductions, dances and reception entertainment."], es: ["DJ y MC para bodas", "Coordinación musical, anuncios, presentaciones, bailes y entretenimiento de recepción."], price: ["Package from $2,500", "Paquete desde $2,500"] },
   { ic: "crown", href: "#quinceaneras", en: ["Quinceañeras", "DJ, MC, lighting, sound and music coordination for quinceañeras and family celebrations."], es: ["Quinceañeras", "DJ, MC, luces, sonido y coordinación musical para quinceañeras y celebraciones familiares."] },
   { ic: "party", href: "#private", en: ["Private Events", "Birthdays, anniversaries, corporate events, celebrations and private parties."], es: ["Eventos privados", "Cumpleaños, aniversarios, eventos corporativos, celebraciones y fiestas privadas."] },
   { ic: "disco", wide: true, href: "#nightlife", en: ["Nightclub & Bar Events", "DJ entertainment and nightlife promotion for bars, lounges, clubs and special events."], es: ["Clubs y bares", "DJ y promoción de nightlife para bares, lounges, clubs y eventos especiales."] },
