@@ -6,10 +6,10 @@ const CONFIG = {
   phone: "",            // e.g. "+12085551234"  (call + text)
   phoneDisplay: "",     // e.g. "(208) 555-1234"
   whatsapp: "",         // digits only, e.g. "12085551234"
-  email: "",            // e.g. "bookings@rulitt.com"
+  email: "r.u.littentertainment@gmail.com", // temporary until Google Workspace
   hoursEN: "",          // e.g. "Mon–Sat 10am–8pm"
   hoursES: "",          // e.g. "Lun–Sáb 10am–8pm"
-  formEndpoint: "",     // FormSubmit AJAX endpoint, e.g. "https://formsubmit.co/ajax/<hash>"
+  formEndpoint: "https://formsubmit.co/ajax/r.u.littentertainment@gmail.com", // swap for the hashed endpoint after activation
   instagram: "",        // full URL
   facebook: "",
   tiktok: "",
