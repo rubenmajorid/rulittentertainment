@@ -353,6 +353,10 @@ $$(".logo-img").forEach((img) => {
 /* ---------- intro: "Welcome to" + logo, then blur/fade out ---------- */
 (() => {
   const intro = $("#intro"); if (!intro) return;
+  // Show the welcome intro only once per visit (not when coming back from another page)
+  let seen = false;
+  try { seen = sessionStorage.getItem("rulitt-intro") === "1"; sessionStorage.setItem("rulitt-intro", "1"); } catch (e) {}
+  if (seen) { intro.remove(); document.body.classList.remove("intro-on"); return; }
   const logo = $(".intro-logo");
   const showLogo = () => { logo.hidden = false; intro.classList.add("has-logo"); };
   if (logo.complete && logo.naturalWidth) showLogo(); else logo.addEventListener("load", showLogo);
@@ -437,4 +441,25 @@ document.addEventListener("play", (e) => {
 (() => {
   const v = new URLSearchParams(location.search).get("svc");
   if (v) $$("#svcChecks input").forEach((i) => { if (i.value === v) i.checked = true; });
+})();
+
+/* ---------- newsletter subscribe (FormSubmit) ---------- */
+(() => {
+  const f = $("#subForm"); if (!f) return;
+  const msg = f.querySelector(".sub-msg");
+  f.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (f._honey.value) return;
+    const email = f.email.value.trim();
+    if (!f.email.checkValidity() || !email) { msg.className = "sub-msg err"; msg.textContent = t("Enter a valid email.", "Escribe un correo válido."); return; }
+    if (!CONFIG.formEndpoint) { msg.className = "sub-msg err"; msg.textContent = t("Coming soon.", "Muy pronto."); return; }
+    const btn = f.querySelector("button"); btn.disabled = true;
+    try {
+      const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ email, type: "Newsletter subscriber", language: lang.toUpperCase(), page: location.pathname, _subject: "New subscriber — R.U.LITT website", _template: "table" }) });
+      if (!r.ok) throw new Error(r.status);
+      f.reset(); msg.className = "sub-msg ok"; msg.textContent = t("You're in! Thanks for subscribing.", "¡Listo! Gracias por suscribirte.");
+    } catch (err) { msg.className = "sub-msg err"; msg.textContent = t("Something went wrong. Try again.", "Algo salió mal. Intenta de nuevo."); }
+    btn.disabled = false;
+  });
 })();
