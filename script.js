@@ -64,15 +64,17 @@ const ICONS = {
 };
 
 const SERVICES = [
-  { ic: "ring",  wide: true, href: "#weddings", en: ["Wedding DJ & MC", "Music coordination, announcements, introductions, dances and reception entertainment."], es: ["DJ y MC para bodas", "Coordinación musical, anuncios, presentaciones, bailes y entretenimiento de recepción."], price: ["Package from $2,500", "Paquete desde $2,500"] },
+  { ic: "ring",  href: "#weddings", en: ["Wedding DJ & MC", "Music coordination, announcements, introductions, dances and reception entertainment."], es: ["DJ y MC para bodas", "Coordinación musical, anuncios, presentaciones, bailes y entretenimiento de recepción."], price: ["Package from $2,500", "Paquete desde $2,500"] },
   { ic: "crown", href: "#quinceaneras", en: ["Quinceañeras", "DJ, MC, lighting, sound and music coordination for quinceañeras and family celebrations."], es: ["Quinceañeras", "DJ, MC, luces, sonido y coordinación musical para quinceañeras y celebraciones familiares."] },
   { ic: "party", href: "#private", en: ["Private Events", "Birthdays, anniversaries, corporate events, celebrations and private parties."], es: ["Eventos privados", "Cumpleaños, aniversarios, eventos corporativos, celebraciones y fiestas privadas."] },
-  { ic: "disco", wide: true, href: "#nightlife", en: ["Nightclub & Bar Events", "DJ entertainment and nightlife promotion for bars, lounges, clubs and special events."], es: ["Clubs y bares", "DJ y promoción de nightlife para bares, lounges, clubs y eventos especiales."] },
+  { ic: "disco", href: "#nightlife", en: ["Nightclub & Bar Events", "DJ entertainment and nightlife promotion for bars, lounges, clubs and special events."], es: ["Clubs y bares", "DJ y promoción de nightlife para bares, lounges, clubs y eventos especiales."] },
   { ic: "mega",  href: "#nightlife", en: ["Event Promotion", "Event marketing, nightlife promotion, flyer campaigns, social media and event branding."], es: ["Promoción de eventos", "Marketing de eventos, promoción de nightlife, flyers, redes sociales y branding."] },
   { ic: "speaker", en: ["Professional Sound System", "Pro speakers and audio equipment for weddings, clubs, private events and larger venues."], es: ["Sistema de sonido profesional", "Bocinas y equipo de audio profesional para bodas, clubs, eventos privados y venues grandes."] },
   { ic: "light", en: ["Event Lighting", "Moving-head lighting, dance-floor lighting, uplighting and production lighting options."], es: ["Iluminación de eventos", "Cabezas móviles, luces de pista, uplighting y opciones de iluminación de producción."] },
   { ic: "spark", en: ["Cold Sparks / Special Effects", "Cold spark effects and other event enhancements, depending on the venue."], es: ["Chispas frías / Efectos", "Chispas frías y otros efectos especiales, según el venue."] },
-  { ic: "cloud", en: ["CO₂ Effects", "CO₂ cannon effects for nightclub and special-event environments."], es: ["Efectos CO₂", "Cañones de CO₂ para clubs y eventos especiales."] },
+  { ic: "cloud", href: "#effects", en: ["CO₂ Club Cannon", "High-energy CO₂ bursts for peak dance-floor moments."], es: ["Cañón de CO₂", "Ráfagas de CO₂ para los momentos pico de la pista."] },
+  { ic: "light", href: "#effects", en: ["Uplighting", "Professional LED uplighting to match your colors, theme or venue décor."], es: ["Uplighting", "Uplighting LED profesional con los colores de tu evento, tema o decoración."] },
+  { ic: "cloud", href: "#effects", en: ["Dancing on the Clouds", "Low-lying cloud effect for first dances, waltzes and grand entrances."], es: ["Bailando en las nubes", "Nube baja sobre la pista para primer baile, vals y entradas especiales."] },
   { ic: "cam",   en: ["360 Photo Booth", "360 photo booth available as an add-on for select events."], es: ["Cabina 360", "Cabina de fotos 360 disponible como extra para eventos seleccionados."] },
 ];
 
@@ -118,6 +120,10 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 /* ---------- renderers ---------- */
+const svcHref = (h) => {
+  if (!h) return $("#quote") ? "#quote" : "index.html#quote";
+  return h.startsWith("#") && !$(h) ? "index.html" + h : h;
+};
 function renderServices() {
   if (!$("#svcGrid")) return;
   $("#svcGrid").innerHTML = SERVICES.map((s) => {
@@ -126,7 +132,7 @@ function renderServices() {
     return `<article class="svc reveal"${s.wide ? ' style="grid-column:span 2"' : ""}>
       <div class="svc-ic"><svg viewBox="0 0 24 24">${ICONS[s.ic]}</svg></div>
       <h3>${title}</h3><p>${desc}</p>${price}
-      <a class="svc-link" href="${s.href || "#quote"}" aria-label="${esc(title)}"></a></article>`;
+      <a class="svc-link" href="${svcHref(s.href)}" aria-label="${esc(title)}"></a></article>`;
   }).join("");
 }
 
@@ -263,6 +269,7 @@ $("#langBtn").addEventListener("click", () => {
 /* Buttons with data-type pre-select the event type in the form */
 document.addEventListener("click", (e) => {
   const s = e.target.closest("a[data-svc]");
+  if (s && !$("#svcChecks")) { e.preventDefault(); location.href = "index.html?svc=" + encodeURIComponent(s.dataset.svc) + "#quote"; return; }
   if (s) $$(`#svcChecks input[value="${s.dataset.svc}"]`).forEach((i) => (i.checked = true));
   const b = e.target.closest("a[data-type]"); if (!b) return;
   if ($("#eventType")) $("#eventType").value = b.dataset.type;
@@ -425,3 +432,9 @@ document.addEventListener("play", (e) => {
   const v = e.target;
   if (v.tagName === "VIDEO" && v.controls && !v.muted) $("#bgMusic")?.pause();
 }, true);
+
+/* Pre-check a service passed from services.html (?svc=...) */
+(() => {
+  const v = new URLSearchParams(location.search).get("svc");
+  if (v) $$("#svcChecks input").forEach((i) => { if (i.value === v) i.checked = true; });
+})();
