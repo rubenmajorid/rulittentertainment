@@ -252,14 +252,41 @@ function applyFilter(f) {
   $$(".gal-item").forEach((it) => it.classList.toggle("hide", f !== "all" && it.dataset.type !== f));
 }
 $("#filters")?.addEventListener("click", (e) => { const c = e.target.closest(".chip"); if (c) applyFilter(c.dataset.f); });
-$("#galGrid")?.addEventListener("click", (e) => {
-  const it = e.target.closest(".gal-item"); if (!it) return;
-  const g = GALLERY[it.dataset.i]; if (!g.src) return;
+/* Lightbox walks through the photos visible under the current filter */
+let lbList = [], lbPos = 0;
+function lbShow(pos) {
+  lbPos = (pos + lbList.length) % lbList.length;
+  const g = GALLERY[lbList[lbPos]];
   $("#lbBody").innerHTML = `<img src="${g.src}" alt="${esc(g.label)}">`;
+  $("#lbCount").textContent = `${lbPos + 1} / ${lbList.length}`;
+}
+const lbClose = () => { if ($("#lightbox")) $("#lightbox").hidden = true; document.body.style.overflow = ""; };
+$("#galGrid")?.addEventListener("click", (e) => {
+  const it = e.target.closest(".gal-item"); if (!it || !GALLERY[it.dataset.i].src) return;
+  lbList = $$(".gal-item:not(.hide)").map((el) => +el.dataset.i).filter((i) => GALLERY[i].src);
+  lbShow(lbList.indexOf(+it.dataset.i));
   $("#lightbox").hidden = false;
+  document.body.style.overflow = "hidden";
 });
-$("#lightbox")?.addEventListener("click", (e) => { if (e.target.closest(".lb-close") || e.target.id === "lightbox") $("#lightbox").hidden = true; });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#lightbox")) $("#lightbox").hidden = true; });
+$("#lightbox")?.addEventListener("click", (e) => {
+  if (e.target.closest(".lb-prev")) return lbShow(lbPos - 1);
+  if (e.target.closest(".lb-next")) return lbShow(lbPos + 1);
+  if (e.target.closest(".lb-close") || e.target.id === "lightbox" || e.target.id === "lbBody") lbClose();
+});
+document.addEventListener("keydown", (e) => {
+  if (!$("#lightbox") || $("#lightbox").hidden) return;
+  if (e.key === "Escape") lbClose();
+  if (e.key === "ArrowLeft") lbShow(lbPos - 1);
+  if (e.key === "ArrowRight") lbShow(lbPos + 1);
+});
+/* Swipe on phones */
+let lbX = null;
+$("#lightbox")?.addEventListener("touchstart", (e) => { lbX = e.touches[0].clientX; }, { passive: true });
+$("#lightbox")?.addEventListener("touchend", (e) => {
+  if (lbX === null) return;
+  const dx = e.changedTouches[0].clientX - lbX; lbX = null;
+  if (Math.abs(dx) > 40) lbShow(lbPos + (dx < 0 ? 1 : -1));
+});
 
 /* ---------- FAQ ---------- */
 $("#faqList")?.addEventListener("click", (e) => {
