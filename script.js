@@ -503,3 +503,27 @@ document.addEventListener("play", (e) => {
     btn.disabled = false;
   });
 })();
+
+/* Event announcement bar: hide after the event */
+(() => {
+  const b = $("#eventBar"); if (!b) return;
+  if (Date.now() > new Date(b.dataset.until).getTime()) { b.remove(); return; }
+  document.body.classList.add("has-event-bar");
+})();
+
+/* ---------- Temporary Halloween theme + home event (auto-off after the event) ---------- */
+(() => {
+  const END = new Date("2026-11-01T00:00:00-06:00").getTime();
+  if (Date.now() < END) document.body.classList.add("theme-halloween");
+  const ev = $("#event"); if (!ev) return;
+  const until = new Date(ev.dataset.until).getTime();
+  if (Date.now() > until) { ev.remove(); return; }
+  const out = $("#eventCount");
+  const tick = () => {
+    const ms = new Date("2026-10-30T21:00:00-06:00").getTime() - Date.now();
+    if (ms <= 0) { out.textContent = t("Happening now!", "¡Es hoy!"); return; }
+    const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24;
+    out.textContent = t(`Starts in ${d}d ${h}h`, `Empieza en ${d}d ${h}h`);
+  };
+  tick(); setInterval(tick, 60000);
+})();

@@ -510,3 +510,98 @@ html[lang="es"] [data-lang-block="en"],html:not([lang="es"]) [data-lang-block="e
 .lb-close{z-index:2}
 .lb-count{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:.85rem;letter-spacing:.15em;color:#ccc}
 @media (max-width:560px){.lb-nav{width:42px;height:42px;top:auto;bottom:14px;transform:none}.lb-prev{left:16px}.lb-next{right:16px}.lb-body img{max-width:94vw;max-height:76vh}}
+
+/* ---- event bar ---- */
+.event-bar{position:fixed;top:0;left:0;right:0;z-index:55;display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;padding:8px 16px;background:#d0021b;color:#fff;font-size:.82rem;font-weight:600;letter-spacing:.04em;text-align:center}
+.event-bar b{text-decoration:underline;white-space:nowrap}
+body.has-event-bar .nav{top:36px}
+@media (max-width:560px){.event-bar{font-size:.72rem;gap:6px;padding:7px 10px}body.has-event-bar .nav{top:46px}}
+.nav-links a.nav-tix{color:#ff4d5e}
+.nav-links a.nav-tix::after{background:#ff4d5e}
+
+/* ---- tickets page ---- */
+.tix-hero{padding:130px 0 60px;background:radial-gradient(ellipse 70% 70% at 30% 20%,rgba(208,2,27,.28),transparent 70%),#050505}
+.tix-hero-in{display:grid;grid-template-columns:.85fr 1.15fr;gap:50px;align-items:center}
+.tix-flyer{aspect-ratio:9/16;max-height:640px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#000;display:grid;place-items:center;box-shadow:0 30px 80px -30px rgba(208,2,27,.6)}
+.tix-flyer img{width:100%;height:100%;object-fit:cover}
+.tix-flyer-txt{text-align:center;padding:24px}
+.tix-venue{font-family:var(--display);font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:.04em;line-height:1}
+.tix-venue small{display:block;font-family:var(--sans);font-size:.75rem;letter-spacing:.1em;color:#ccc;margin-top:6px}
+.tix-title{font-family:var(--display);font-weight:400;font-size:clamp(4.5rem,11vw,8rem);line-height:.85;color:#efe6d6;margin:26px 0 8px;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.tix-sub{font-size:.85rem;font-weight:800;letter-spacing:.35em}
+.tix-date{margin-top:26px;background:#d0021b;color:#000;font-family:var(--display);font-size:clamp(1.6rem,3.2vw,2.4rem);padding:.15em .5em}
+.tix-date span{color:#fff}
+.tix-facts{list-style:none;display:grid;gap:12px;margin:24px 0}
+.tix-facts li{display:grid;grid-template-columns:90px 1fr;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.tix-facts b{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.tix-tags{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.tix-tags li{font-size:.8rem;padding:.35em .9em;border-radius:999px;border:1px solid rgba(208,2,27,.6);background:rgba(208,2,27,.1)}
+.tix-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
+.tix-steps{list-style:none;margin:24px 0}
+.tix-steps li{display:flex;gap:14px;align-items:center;padding:10px 0}
+.tix-steps b{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:#fff;color:#000}
+.tix-note{font-size:.85rem;color:var(--muted);margin-top:12px}
+.tix-price,.tix-total{display:flex;justify-content:space-between;align-items:baseline}
+.tix-price span{font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;color:#cfcfcf}
+.tix-price strong,.tix-total strong{font-family:var(--display);font-size:2.2rem;font-weight:400;line-height:1}
+.tix-total{border-top:1px solid var(--line);padding-top:14px}
+.tix-qty{display:flex;align-items:center;gap:8px}
+.tix-qty input{text-align:center;max-width:80px}
+.tix-qty button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);font-size:1.3rem;background:#0a0a0a}
+.tix-check{display:flex!important;grid-template-columns:none;align-items:flex-start;gap:10px;font-weight:500!important}
+.tix-check input{width:auto!important;margin-top:4px;accent-color:#fff}
+.tix-check.invalid,.tix-check input.invalid+span{color:#ff7d93}
+.tix-done{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,34px);text-align:center}
+.tix-done h3{font-family:var(--display);font-weight:400;font-size:2.2rem;margin-bottom:16px}
+.tix-code{display:inline-flex;flex-direction:column;padding:14px 26px;border:2px dashed rgba(255,255,255,.4);border-radius:16px;margin-bottom:12px}
+.tix-code span{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.tix-code strong{font-family:var(--display);font-size:2.4rem;letter-spacing:.06em;font-weight:400}
+.tix-amt{margin-bottom:18px;color:#cfcfcf}
+.btn-venmo{background:#008cff;color:#fff;box-shadow:0 10px 30px -10px rgba(0,140,255,.7)}
+.btn-venmo:hover{background:#1a98ff}
+.tix-qr{margin:22px auto 6px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.tix-qr #tixQr{background:#fff;padding:10px;border-radius:12px}
+.tix-qr p{font-size:.8rem;color:var(--muted)}
+.tix-new{margin-top:8px;font-size:.85rem}
+@media (max-width:860px){.tix-hero-in,.tix-grid{grid-template-columns:1fr}.tix-flyer{max-height:520px;width:min(100%,360px);margin:0 auto}.tix-qr{display:none}}
+
+/* ---- home event ---- */
+.home-event{background:radial-gradient(ellipse 60% 80% at 20% 30%,rgba(208,2,27,.25),transparent 70%),#050505;border-bottom:1px solid var(--line)}
+.home-event-in{display:grid;grid-template-columns:.7fr 1.3fr;gap:50px;align-items:center}
+.home-event-flyer{max-height:560px;transition:transform .3s}
+.home-event-flyer:hover{transform:translateY(-4px) rotate(-.5deg)}
+.home-event-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.home-event-count{font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;color:#ff4d5e;font-weight:700}
+@media (max-width:860px){.home-event-in{grid-template-columns:1fr}.home-event-flyer{width:min(100%,320px);margin:0 auto;max-height:460px}}
+
+/* ==== TEMPORARY HALLOWEEN THEME (body.theme-halloween, flyer colors: black / red / cream) ==== */
+.theme-halloween{--hw-red:#d0021b;--hw-red2:#ff2a3d;--hw-cream:#efe6d6;--grad:linear-gradient(100deg,#ff2a3d,#d0021b 55%,#ff6a3d)}
+.theme-halloween .btn-glow,.theme-halloween .chip.active,.theme-halloween .quote-steps b,.theme-halloween .tix-steps b,.theme-halloween .fab-btn.to-top{background:var(--hw-red);color:#fff;box-shadow:0 10px 30px -10px rgba(208,2,27,.8)}
+.theme-halloween .btn-glow:hover{background:var(--hw-red2);box-shadow:0 14px 40px -8px rgba(255,42,61,.8)}
+.theme-halloween .kicker{color:var(--hw-red2)}
+.theme-halloween .hero-title .grad,.theme-halloween .brand-mark,.theme-halloween .pillars b{background:none;-webkit-text-fill-color:currentColor;color:var(--hw-red2);filter:drop-shadow(0 0 24px rgba(208,2,27,.5))}
+.theme-halloween .hero-title .line:first-child,.theme-halloween .h2{color:var(--hw-cream)}
+.theme-halloween .hero{background:radial-gradient(ellipse 80% 60% at 50% 110%,rgba(208,2,27,.35),transparent 70%),radial-gradient(ellipse 50% 40% at 85% 10%,rgba(255,106,61,.18),transparent 70%),var(--bg)}
+.theme-halloween .b1,.theme-halloween .b4{color:rgba(208,2,27,.6)}
+.theme-halloween .b2{color:rgba(255,106,61,.45)}
+.theme-halloween .b3{color:rgba(239,230,214,.35)}
+.theme-halloween .eq i{background:linear-gradient(0deg,#d0021b,#ff6a3d)}
+.theme-halloween .marquee{background:#0a0000;border-color:rgba(208,2,27,.35)}
+.theme-halloween .marquee span:nth-child(3n+1){color:var(--hw-red2)}
+.theme-halloween .svc-ic{background:rgba(208,2,27,.15);color:var(--hw-red2)}
+.theme-halloween .checks li::before{border-color:var(--hw-red2)}
+.theme-halloween .cta-band{background:var(--hw-red);color:#000}
+.theme-halloween .cta-band .h2{color:#000}
+.theme-halloween .cta-band .btn-light{background:#000;color:#fff}
+.theme-halloween .nightlife{background:radial-gradient(ellipse 70% 70% at 50% 0%,rgba(208,2,27,.3),transparent 70%),#040404}
+.theme-halloween .qform input:focus,.theme-halloween .qform select:focus,.theme-halloween .qform textarea:focus{border-color:var(--hw-red2);box-shadow:0 0 0 3px rgba(208,2,27,.25)}
+.theme-halloween .checkgrid label:has(input:checked){border-color:var(--hw-red2);background:rgba(208,2,27,.12)}
+.theme-halloween .checkgrid input,.theme-halloween .pl-vol{accent-color:var(--hw-red)}
+.theme-halloween .pl-btn{background:var(--hw-red);color:#fff}
+.theme-halloween .pl-bars i{background:var(--hw-red2)}
+.theme-halloween .nav-links a::after{background:var(--hw-red2)}
+.theme-halloween .svc::before{background:linear-gradient(100deg,#d0021b,#ff6a3d)}
+.theme-halloween .intro-bar{background:var(--hw-red);color:#000}
+.theme-halloween .intro-mark{color:var(--hw-cream)}
+.theme-halloween .powered b{color:var(--hw-red2)}
+.theme-halloween .lb-nav{border-color:rgba(208,2,27,.6)}
