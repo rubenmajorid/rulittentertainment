@@ -509,6 +509,8 @@ document.addEventListener("play", (e) => {
   const b = $("#eventBar"); if (!b) return;
   if (Date.now() > new Date(b.dataset.until).getTime()) { b.remove(); return; }
   document.body.classList.add("has-event-bar");
+  const fit = () => document.documentElement.style.setProperty("--bar-h", b.offsetHeight + "px");
+  fit(); addEventListener("resize", fit);
 })();
 
 /* ---------- Temporary Halloween theme + home event (auto-off after the event) ---------- */

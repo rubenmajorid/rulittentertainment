@@ -605,3 +605,17 @@ body.has-event-bar .nav{top:36px}
 .theme-halloween .intro-mark{color:var(--hw-cream)}
 .theme-halloween .powered b{color:var(--hw-red2)}
 .theme-halloween .lb-nav{border-color:rgba(208,2,27,.6)}
+
+/* ---- event bar fix: one line, nav sits right under it ---- */
+:root{--bar-h:0px}
+.event-bar{flex-wrap:nowrap;white-space:nowrap;overflow:hidden;height:36px;padding:0 16px}
+.event-bar span{overflow:hidden;text-overflow:ellipsis}
+.event-bar .eb-short{display:none}
+body.has-event-bar .nav{top:var(--bar-h)}
+body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
+@media (max-width:1020px){body.has-event-bar .nav-links{top:calc(64px + var(--bar-h))}}
+@media (max-width:560px){
+  .event-bar{font-size:.78rem;gap:10px;padding:0 12px;height:34px}
+  .event-bar .eb-long{display:none}.event-bar .eb-short{display:inline}
+  body.has-event-bar .nav{top:var(--bar-h)}
+}
