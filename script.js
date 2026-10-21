@@ -60,7 +60,7 @@ const REVIEWS = [];
 /* ========================================================= */
 
 let lang = "en";
-try { lang = localStorage.getItem("rulitt-lang") || (navigator.language || "").startsWith("es") && "es" || "en"; } catch (e) {}
+try { lang = localStorage.getItem("rulitt-lang") || "en"; } catch (e) {}
 const t = (en, es) => (lang === "es" ? es : en);
 
 const ICONS = {
@@ -416,6 +416,12 @@ $$(".logo-img").forEach((img) => {
 (() => {
   const audio = $("#bgMusic"), player = $("#player"), vol = $("#plVol");
   if (!audio) return;
+  // Halloween soundtrack until Nov 1, then back to the regular track
+  if (Date.now() < new Date("2026-11-01T00:00:00-06:00").getTime()) {
+    audio.src = "media/music-halloween.mp3";
+    $$(".pl-title").forEach((e) => (e.textContent = "Halloween Party"));
+    $$(".pl-artist").forEach((e) => (e.textContent = "331music · Pixabay"));
+  }
   try {
     const v = sessionStorage.getItem("rulitt-vol"); if (v !== null) vol.value = v;
     const tm = +sessionStorage.getItem("rulitt-time"); if (tm) audio.currentTime = tm;

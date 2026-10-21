@@ -10,7 +10,7 @@ const EVENT = {
   venmoUser: "",                        // Venmo username WITHOUT @, e.g. "RULITT-Entertainment"
   price: 0,                     // price per ticket in USD, e.g. 20
   maxPerOrder: 10,
-  flyer: "",                    // e.g. "media/events/apagon.jpg"
+  flyer: "media/events/apagon.jpg",                    // e.g. "media/events/apagon.jpg"
   salesEnd: "2026-10-31T02:00:00-06:00", // sales close automatically after this
 };
 

@@ -619,3 +619,28 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
   .event-bar .eb-long{display:none}.event-bar .eb-short{display:inline}
   body.has-event-bar .nav{top:var(--bar-h)}
 }
+
+/* ---- home event with real flyer under the title ---- */
+.home-event-in.one{grid-template-columns:1fr;max-width:760px;text-align:center}
+.home-event-in.one .tix-facts li{text-align:left}
+.home-event-in.one .home-event-cta{justify-content:center}
+.home-event-in.one .lead{margin:0 auto 10px}
+.home-event-flyer{display:block;width:min(100%,420px);margin:6px auto 28px;border-radius:20px;overflow:hidden;border:1px solid rgba(208,2,27,.5);box-shadow:0 30px 80px -25px rgba(208,2,27,.7);transition:transform .3s}
+.home-event-flyer:hover{transform:translateY(-4px)}
+.home-event-flyer img{width:100%;height:auto;display:block}
+.tix-flyer.has-img{display:block;aspect-ratio:auto;max-height:none}
+.tix-flyer.has-img img{height:auto}
+.tix-map-sec{padding:0 0 20px;background:#050505}
+.tix-map-wrap{max-width:520px}
+.tix-map-wrap img{width:100%;border-radius:20px;border:1px solid var(--line)}
+
+/* ---- Halloween: creepy fog + flicker (temporary) ---- */
+.theme-halloween .hero::after,.theme-halloween .home-event::after{content:"";position:absolute;inset:auto -20% 0 -20%;height:55%;z-index:2;pointer-events:none;opacity:.55;
+  background:radial-gradient(ellipse 40% 60% at 20% 80%,rgba(220,220,220,.16),transparent 70%),radial-gradient(ellipse 35% 50% at 70% 90%,rgba(220,220,220,.14),transparent 70%),radial-gradient(ellipse 30% 40% at 45% 70%,rgba(208,2,27,.12),transparent 70%);
+  filter:blur(18px);animation:hwFog 18s ease-in-out infinite alternate}
+.theme-halloween .home-event{position:relative;overflow:hidden}
+.theme-halloween .home-event .wrap{position:relative;z-index:3}
+@keyframes hwFog{0%{transform:translateX(-6%)}100%{transform:translateX(6%)}}
+.theme-halloween .hero-title .grad{animation:hwFlicker 6s infinite}
+@keyframes hwFlicker{0%,19%,21%,62%,64%,100%{opacity:1}20%,63%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.theme-halloween .hero-title .grad{animation:none}}
