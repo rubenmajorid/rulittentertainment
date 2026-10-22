@@ -112,9 +112,11 @@ const EVENT = {
     $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)} · ${o.people || o.qty} ${t("people", "personas")}`;
     $("#tixDoneTotal").textContent = money(o.total);
     $("#tixVenmo").href = url;
+    form.hidden = true; $("#tixDone").hidden = false;   // show payment screen first, always
     $("#tixQr").innerHTML = "";
-    if (window.QRCode) new QRCode($("#tixQr"), { text: url, width: 160, height: 160, colorDark: "#000", colorLight: "#fff" });
-    form.hidden = true; $("#tixDone").hidden = false;
+    try {
+      if (window.QRCode) new QRCode($("#tixQr"), { text: url, width: 180, height: 180, colorDark: "#000", colorLight: "#fff", correctLevel: QRCode.CorrectLevel.L });
+    } catch (err) { $("#tixQr").closest(".tix-qr").hidden = true; }
     $("#tixDone").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 })();

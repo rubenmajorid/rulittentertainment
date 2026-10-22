@@ -522,7 +522,7 @@ document.addEventListener("submit", (e) => {
 
 /* Popup: once per visitor, after 18s or 60% scroll — never on admin/tickets checkout or if already subscribed */
 (() => {
-  if (/admin\.html$/.test(location.pathname) || subscribed()) return;
+  if (/(admin|tickets)\.html$/.test(location.pathname) || subscribed()) return;
   try { if (localStorage.getItem("rulitt-pop")) return; } catch (e) { return; }
   const pop = document.createElement("div");
   pop.id = "subPop"; pop.className = "sub-pop"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", "Subscribe");
