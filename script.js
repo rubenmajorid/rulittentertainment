@@ -430,9 +430,9 @@ $$(".logo-img").forEach((img) => {
   if (!audio) return;
   // Halloween soundtrack until Nov 1, then back to the regular track
   if (Date.now() < new Date("2026-11-01T00:00:00-06:00").getTime()) {
-    audio.src = "media/music-halloween.mp3";
-    $$(".pl-title").forEach((e) => (e.textContent = "Halloween Party"));
-    $$(".pl-artist").forEach((e) => (e.textContent = "331music · Pixabay"));
+    audio.src = "media/music-halloween.mp3?v=2";
+    $$(".pl-title").forEach((e) => (e.textContent = "Halloween Soundtrack"));
+    $$(".pl-artist").forEach((e) => (e.textContent = "Synth Mystery Pulse · Pixabay"));
   }
   try {
     const v = sessionStorage.getItem("rulitt-vol"); if (v !== null) vol.value = v;
