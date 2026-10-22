@@ -697,3 +697,5 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .tix-manual-t{font-weight:700;margin-bottom:8px}
 .tix-manual ol{padding-left:20px;display:grid;gap:8px;color:#e6e6e6;font-size:.9rem}
 .tix-manual a{text-decoration:underline}
+
+.tix-web-btn{margin-top:10px;border-color:rgba(0,140,255,.6)}

@@ -112,7 +112,7 @@ const EVENT = {
   $("#tixVenmo")?.addEventListener("click", (e) => {
     e.preventDefault();
     const a = $("#tixVenmo");
-    if (isPhone) { location.href = a.dataset.app; } else { window.open(a.dataset.web, "_blank", "noopener"); }
+    if (isPhone) location.href = a.dataset.app; else window.open(a.dataset.web, "_blank", "noopener");
   });
   document.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-copy]"); if (!b || !b.closest(".tix-manual")) return;
@@ -128,9 +128,9 @@ const EVENT = {
     $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)} · ${o.people || o.qty} ${t("people", "personas")}`;
     $("#tixDoneTotal").textContent = money(o.total);
     $("#tixVenmo").href = url;
-    $("#tixVenmo").dataset.web = url;
+    $("#tixVenmo").dataset.web = `https://account.venmo.com/pay?txn=pay&recipients=${encodeURIComponent(EVENT.venmoUser)}&amount=${o.total.toFixed(2)}&note=${encodeURIComponent(note)}`;
     $("#tixVenmo").dataset.app = `venmo://paycharge?txn=pay&recipients=${encodeURIComponent(EVENT.venmoUser)}&amount=${o.total.toFixed(2)}&note=${encodeURIComponent(note)}`;
-    $("#tixWeb").href = `https://account.venmo.com/u/${encodeURIComponent(EVENT.venmoUser)}`;
+    $("#tixWeb").href = $("#tixVenmo").dataset.web || `https://account.venmo.com/u/${encodeURIComponent(EVENT.venmoUser)}`;
     $("#tixManualAmt").textContent = money(o.total);
     $("#tixCopyNote").dataset.copy = note;
     form.hidden = true; $("#tixDone").hidden = false;   // show payment screen first, always

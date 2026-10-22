@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=202610212123">
+<link rel="stylesheet" href="styles.css?v=202610212138">
 </head>
 <body class="page-sub">
 
@@ -122,6 +122,7 @@
       <div class="tix-code"><span data-es="Tu código">Your code</span><strong id="tixCode"></strong></div>
       <p class="tix-amt"><span id="tixDoneQty"></span> · <strong id="tixDoneTotal"></strong></p>
       <a class="btn btn-venmo btn-lg btn-block" id="tixVenmo" href="#"><span data-es="Pagar con Venmo">Pay with Venmo</span></a>
+      <a class="btn btn-ghost btn-block tix-web-btn" id="tixWeb" href="#" target="_blank" rel="noopener" data-es="¿No tienes la app? Paga en Venmo.com">No Venmo app? Pay on Venmo.com</a>
       <div class="tix-manual" id="tixManual">
         <p class="tix-manual-t" data-es="¿No se abrió Venmo? Paga a mano así:">Venmo didn't open? Pay manually:</p>
         <ol>
@@ -130,7 +131,7 @@
           <li><span data-es="Monto:">Amount:</span> <b id="tixManualAmt"></b></li>
           <li><span data-es="En la nota pega tu código:">In the note paste your code:</span> <button type="button" class="btn btn-sm btn-ghost" id="tixCopyNote" data-es="Copiar nota con mi código">Copy note with my code</button></li>
         </ol>
-        <p class="tix-note"><span data-es="¿No tienes Venmo?">Don't have Venmo?</span> <a href="https://venmo.com/download" target="_blank" rel="noopener" data-es="Descárgalo aquí">Download it here</a> · <a id="tixWeb" href="#" target="_blank" rel="noopener" data-es="o paga en venmo.com">or pay on venmo.com</a></p>
+        <p class="tix-note"><span data-es="¿No tienes Venmo?">Don't have Venmo?</span> <a href="https://venmo.com/download" target="_blank" rel="noopener" data-es="Descárgalo aquí">Download it here</a></p>
       </div>
       <div class="tix-qr"><div id="tixQr"></div><p data-es="¿Estás en la computadora? Escanea con tu celular.">On a computer? Scan with your phone.</p></div>
       <p class="tix-note" data-es="Si Venmo no abre, envía el monto a @USER con tu código en la nota.">If Venmo doesn't open, send the amount to @USER with your code in the note.</p>
@@ -219,6 +220,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="script.js?v=202610212123"></script>
-<script src="tickets.js?v=202610212127"></script>
+<script src="tickets.js?v=202610212138"></script>
 </body>
 </html>
