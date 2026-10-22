@@ -105,15 +105,14 @@ const EVENT = {
     form.reset(); qty.value = 1; renderTiers(); update(); form.hidden = false; $("#tixDone").hidden = true;
   });
 
-  // Venmo button: open in the same tab (the app takes over). If nothing happens (no app / blocked), show manual steps.
+  // Venmo button. Phones: open the Venmo app directly (venmo://) so the page never navigates away —
+  // if the app isn't installed the phone just shows an alert and the manual steps stay on screen.
+  // Computers: venmo.com web checkout in a new tab.
+  const isPhone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   $("#tixVenmo")?.addEventListener("click", (e) => {
     e.preventDefault();
-    const url = $("#tixVenmo").href; let left = false;
-    const onHide = () => { left = true; };
-    document.addEventListener("visibilitychange", onHide, { once: true });
-    addEventListener("pagehide", onHide, { once: true });
-    setTimeout(() => { if (!left && document.visibilityState === "visible") { $("#tixManual").hidden = false; $("#tixManual").scrollIntoView({ behavior: "smooth", block: "center" }); } }, 2200);
-    location.href = url;
+    const a = $("#tixVenmo");
+    if (isPhone) { location.href = a.dataset.app; } else { window.open(a.dataset.web, "_blank", "noopener"); }
   });
   document.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-copy]"); if (!b || !b.closest(".tix-manual")) return;
@@ -129,6 +128,8 @@ const EVENT = {
     $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)} · ${o.people || o.qty} ${t("people", "personas")}`;
     $("#tixDoneTotal").textContent = money(o.total);
     $("#tixVenmo").href = url;
+    $("#tixVenmo").dataset.web = url;
+    $("#tixVenmo").dataset.app = `venmo://paycharge?txn=pay&recipients=${encodeURIComponent(EVENT.venmoUser)}&amount=${o.total.toFixed(2)}&note=${encodeURIComponent(note)}`;
     $("#tixWeb").href = `https://account.venmo.com/u/${encodeURIComponent(EVENT.venmoUser)}`;
     $("#tixManualAmt").textContent = money(o.total);
     $("#tixCopyNote").dataset.copy = note;
