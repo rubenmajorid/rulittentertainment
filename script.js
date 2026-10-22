@@ -533,7 +533,6 @@ document.addEventListener("submit", (e) => {
       <h3>${t("Never miss a party", "No te pierdas ninguna fiesta")}</h3>
       <p>${t("Be the first to know about new events, early-bird presales and VIP tables.", "Entérate primero de nuevos eventos, preventas Early Bird y mesas VIP.")}</p>
       <form data-sub novalidate>
-        <input name="name" placeholder="${t("Your name", "Tu nombre")}" autocomplete="given-name">
         <input name="email" type="email" required placeholder="${t("Your email", "Tu correo")}" autocomplete="email">
         <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off">
         <button class="btn btn-glow btn-block" type="submit">${t("Join the list", "Unirme a la lista")}</button>
