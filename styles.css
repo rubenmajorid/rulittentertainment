@@ -692,3 +692,8 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .sub-pop .sub-msg{margin:0!important}
 @media (max-width:820px){.join-in{grid-template-columns:1fr}}
 @media (max-width:560px){.join-form{grid-template-columns:1fr}}
+
+.tix-manual{margin-top:16px;text-align:left;padding:16px 18px;border:1px dashed rgba(0,140,255,.6);border-radius:14px;background:rgba(0,140,255,.08)}
+.tix-manual-t{font-weight:700;margin-bottom:8px}
+.tix-manual ol{padding-left:20px;display:grid;gap:8px;color:#e6e6e6;font-size:.9rem}
+.tix-manual a{text-decoration:underline}

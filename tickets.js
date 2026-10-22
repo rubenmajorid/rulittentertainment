@@ -105,6 +105,23 @@ const EVENT = {
     form.reset(); qty.value = 1; renderTiers(); update(); form.hidden = false; $("#tixDone").hidden = true;
   });
 
+  // Venmo button: open in the same tab (the app takes over). If nothing happens (no app / blocked), show manual steps.
+  $("#tixVenmo")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    const url = $("#tixVenmo").href; let left = false;
+    const onHide = () => { left = true; };
+    document.addEventListener("visibilitychange", onHide, { once: true });
+    addEventListener("pagehide", onHide, { once: true });
+    setTimeout(() => { if (!left && document.visibilityState === "visible") { $("#tixManual").hidden = false; $("#tixManual").scrollIntoView({ behavior: "smooth", block: "center" }); } }, 2200);
+    location.href = url;
+  });
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-copy]"); if (!b || !b.closest(".tix-manual")) return;
+    try { await navigator.clipboard.writeText(b.dataset.copy); } catch (err) {
+      const ta = document.createElement("textarea"); ta.value = b.dataset.copy; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); }
+    const old = b.textContent; b.textContent = t("Copied ✓", "Copiado ✓"); setTimeout(() => (b.textContent = old), 1800);
+  });
+
   function showDone(o) {
     const note = `${EVENT.name} – ${o.qty} ${o.tierName} (${o.people || o.qty} ppl) – ${o.code} – ${o.name}`;
     const url = `https://venmo.com/${encodeURIComponent(EVENT.venmoUser)}?txn=pay&amount=${o.total.toFixed(2)}&note=${encodeURIComponent(note)}`;
@@ -112,6 +129,9 @@ const EVENT = {
     $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)} · ${o.people || o.qty} ${t("people", "personas")}`;
     $("#tixDoneTotal").textContent = money(o.total);
     $("#tixVenmo").href = url;
+    $("#tixWeb").href = `https://account.venmo.com/u/${encodeURIComponent(EVENT.venmoUser)}`;
+    $("#tixManualAmt").textContent = money(o.total);
+    $("#tixCopyNote").dataset.copy = note;
     form.hidden = true; $("#tixDone").hidden = false;   // show payment screen first, always
     $("#tixQr").innerHTML = "";
     try {

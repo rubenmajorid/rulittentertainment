@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=202610212004">
+<link rel="stylesheet" href="styles.css?v=202610212123">
 </head>
 <body class="page-sub">
 
@@ -121,7 +121,17 @@
       <h3 data-es="Paga con Venmo para confirmar">Pay with Venmo to confirm</h3>
       <div class="tix-code"><span data-es="Tu código">Your code</span><strong id="tixCode"></strong></div>
       <p class="tix-amt"><span id="tixDoneQty"></span> · <strong id="tixDoneTotal"></strong></p>
-      <a class="btn btn-venmo btn-lg btn-block" id="tixVenmo" href="#" target="_blank" rel="noopener"><span data-es="Pagar con Venmo">Pay with Venmo</span></a>
+      <a class="btn btn-venmo btn-lg btn-block" id="tixVenmo" href="#"><span data-es="Pagar con Venmo">Pay with Venmo</span></a>
+      <div class="tix-manual" id="tixManual" hidden>
+        <p class="tix-manual-t" data-es="¿No se abrió Venmo? Paga así:">Venmo didn't open? Pay like this:</p>
+        <ol>
+          <li data-es="Abre la app de Venmo y toca <b>Pagar / Pay</b>.">Open the Venmo app and tap <b>Pay</b>.</li>
+          <li><span data-es="Busca:">Search:</span> <b>@REntertainment100</b> <button type="button" class="link-btn" data-copy="REntertainment100" data-es="copiar">copy</button></li>
+          <li><span data-es="Monto:">Amount:</span> <b id="tixManualAmt"></b></li>
+          <li><span data-es="En la nota pega tu código:">In the note paste your code:</span> <button type="button" class="btn btn-sm btn-ghost" id="tixCopyNote" data-es="Copiar nota con mi código">Copy note with my code</button></li>
+        </ol>
+        <p class="tix-note"><span data-es="¿No tienes Venmo?">Don't have Venmo?</span> <a href="https://venmo.com/download" target="_blank" rel="noopener" data-es="Descárgalo aquí">Download it here</a> · <a id="tixWeb" href="#" target="_blank" rel="noopener" data-es="o paga en venmo.com">or pay on venmo.com</a></p>
+      </div>
       <div class="tix-qr"><div id="tixQr"></div><p data-es="¿Estás en la computadora? Escanea con tu celular.">On a computer? Scan with your phone.</p></div>
       <p class="tix-note" data-es="Si Venmo no abre, envía el monto a @USER con tu código en la nota.">If Venmo doesn't open, send the amount to @USER with your code in the note.</p>
       <button type="button" class="link-btn tix-new" id="tixNew" data-es="Hacer otra compra">Start a new order</button>
@@ -208,7 +218,7 @@
 <div class="lightbox" id="lightbox" hidden><button class="lb-close" aria-label="Close">×</button><div class="lb-body" id="lbBody"></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="script.js?v=202610212015"></script>
-<script src="tickets.js?v=202610212015"></script>
+<script src="script.js?v=202610212123"></script>
+<script src="tickets.js?v=202610212123"></script>
 </body>
 </html>
