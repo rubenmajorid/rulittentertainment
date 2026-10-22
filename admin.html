@@ -113,7 +113,7 @@ td small{color:var(--muted)}
 
 <script>
 /* Same URL as CONFIG.dataEndpoint in script.js (Google Apps Script web app, ends in /exec) */
-const API = "";
+const API = "https://script.google.com/macros/s/AKfycbymvvL6luztOMd3b6jRBZc6HQiJizkM_wfEOBRGtlhYMPuXFYOVdI9cMb_YR_8_tuQX/exec";
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));

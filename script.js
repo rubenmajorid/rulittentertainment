@@ -10,7 +10,7 @@ const CONFIG = {
   hoursEN: "",          // e.g. "Mon–Sat 10am–8pm"
   hoursES: "",          // e.g. "Lun–Sáb 10am–8pm"
   formEndpoint: "https://formsubmit.co/ajax/r.u.littentertainment@gmail.com", // swap for the hashed endpoint after activation
-  dataEndpoint: "",     // Google Apps Script web app URL (…/exec) — feeds admin.html
+  dataEndpoint: "https://script.google.com/macros/s/AKfycbymvvL6luztOMd3b6jRBZc6HQiJizkM_wfEOBRGtlhYMPuXFYOVdI9cMb_YR_8_tuQX/exec",     // Google Apps Script web app URL (…/exec) — feeds admin.html
   instagram: "",        // full URL
   facebook: "",
   tiktok: "",
