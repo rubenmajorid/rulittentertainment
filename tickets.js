@@ -36,12 +36,9 @@ const EVENT = {
       + `<p class="tix-door">${t("At the door", "En la puerta")}: <b>${money(EVENT.doorPrice)}</b> · ${t("buy online and save", "compra en línea y ahorra")}</p>`;
   };
   const renderGuests = () => {
-    const tr = tier(), n = Math.max(0, (parseInt(qty.value, 10) || 1) * tr.people - 1);
-    const box = $("#tixGuests"), old = $$("input", box).map((i) => i.value);
-    if (!n) { box.innerHTML = ""; return; }
-    box.innerHTML = `<p class="tix-guests-t">${t("Guest names (for the door list)", "Nombres de tus invitados (para la lista de la puerta)")}</p>
-      <div class="tix-guests-g">${Array.from({ length: n }, (_, i) => `<input name="guest" placeholder="${t("Guest", "Invitado")} ${i + 2}" value="${esc(old[i] || "")}" autocomplete="off">`).join("")}</div>
-      <p class="tix-note">${t("Optional, but it makes check-in faster. Everyone needs a valid ID.", "Opcional, pero agiliza la entrada. Todos necesitan ID válida.")}</p>`;
+    const n = (parseInt(qty.value, 10) || 1) * tier().people;
+    $("#tixGuests").innerHTML = `<p class="tix-party">${t(`Reservation for <b>${n} ${n > 1 ? "people" : "person"}</b> under your name — your group enters together with your code.`,
+      `Reserva para <b>${n} ${n > 1 ? "personas" : "persona"}</b> a tu nombre — tu grupo entra junto con tu código.`)}</p>`;
   };
   const fillUser = () => $$(".tix-note").forEach((p) => {
     if (p.textContent.includes("@USER")) p.textContent = p.textContent.replace("@USER", "@" + EVENT.venmoUser);
@@ -83,8 +80,8 @@ const EVENT = {
     update();
     const tr = tier(), q = +qty.value, total = tr.price * q;
     const code = `${EVENT.id}-${tr.id}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-    const guests = $$("#tixGuests input").map((i) => i.value.trim()).filter(Boolean);
-    const order = { guests, code, tier: tr.id, tierName: tr.en, unit: tr.price, name: form.name.value.trim(), email: form.email.value.trim(), phone: form.phone.value.trim(), qty: q, total };
+    const people = q * tr.people;
+    const order = { people, code, tier: tr.id, tierName: tr.en, unit: tr.price, name: form.name.value.trim(), email: form.email.value.trim(), phone: form.phone.value.trim(), qty: q, total };
     const btn = $("#tixBtn"); btn.disabled = true;
 
     // Send the reservation to R.U.LITT's email (FormSubmit) so they can match it with Venmo payments
@@ -93,11 +90,11 @@ const EVENT = {
         await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({ _subject: `TICKET ${code} — ${order.name} — ${q} × ${tr.en} ${money(tr.price)} = ${money(total)}`, _template: "table",
             type: "Event ticket (pending Venmo payment)", event: EVENT.name, ticket_type: tr.en, code, name: order.name, email: order.email, phone: order.phone,
-            tickets: q, people: q * tr.people, guests: guests.join(", ") || "-", total: money(total), venmo_to: "@" + EVENT.venmoUser, language: lang.toUpperCase() }) });
+            tickets: q, people, total: money(total), venmo_to: "@" + EVENT.venmoUser, language: lang.toUpperCase() }) });
       } catch (err) { /* still let them pay; the Venmo note carries the code */ }
     }
     sendData("ticket", { code, event: EVENT.name, ticket_type: tr.en, qty: q, unit: tr.price, total, name: order.name, email: order.email, phone: order.phone,
-      guests: [order.name].concat(guests).join(", ") });
+      guests: `${order.name} (${people} ${people > 1 ? "people" : "person"})` });
     try { localStorage.setItem("rulitt-ticket-" + EVENT.id, JSON.stringify(order)); } catch (e) {}
     btn.disabled = false;
     showDone(order);
@@ -109,10 +106,10 @@ const EVENT = {
   });
 
   function showDone(o) {
-    const note = `${EVENT.name} – ${o.qty} ${o.tierName} – ${o.code} – ${o.name}`;
+    const note = `${EVENT.name} – ${o.qty} ${o.tierName} (${o.people || o.qty} ppl) – ${o.code} – ${o.name}`;
     const url = `https://venmo.com/${encodeURIComponent(EVENT.venmoUser)}?txn=pay&amount=${o.total.toFixed(2)}&note=${encodeURIComponent(note)}`;
     $("#tixCode").textContent = o.code;
-    $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)}`;
+    $("#tixDoneQty").textContent = `${o.qty} × ${o.tierName} ${money(o.unit)} · ${o.people || o.qty} ${t("people", "personas")}`;
     $("#tixDoneTotal").textContent = money(o.total);
     $("#tixVenmo").href = url;
     $("#tixQr").innerHTML = "";

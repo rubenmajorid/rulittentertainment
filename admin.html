@@ -199,7 +199,7 @@ function render() {
         <select class="in" id="st"><option value="">Todos</option><option>Pending</option><option>Paid</option><option>Cancelled</option></select>
         <button class="btn sm ghost" id="exp">Exportar CSV</button></div>
       <p style="color:var(--muted);margin-bottom:10px">Compara cada compra con Venmo (@REntertainment100): la nota del pago trae el mismo código. Marca "Pagado" cuando llegue.</p>
-      <div class="tbl"><table><thead><tr><th>Código / fecha</th><th>Comprador</th><th>Entrada</th><th>Total</th><th>Invitados</th><th>Estado</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;
+      <div class="tbl"><table><thead><tr><th>Código / fecha</th><th>Comprador</th><th>Entrada</th><th>Total</th><th>Reserva</th><th>Estado</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;
     const draw = () => {
       const q = $("#q").value.toLowerCase(), st = $("#st").value;
       const rows = tickets.filter((t) => (!st || t.status === st) && JSON.stringify(t).toLowerCase().includes(q)).reverse();
@@ -223,7 +223,7 @@ function render() {
     v.innerHTML = `<div class="panel"><h2>Lista de puerta</h2>
       <div class="tools"><input class="in" id="q" placeholder="Buscar nombre o código" autofocus>
         <label style="display:flex;gap:6px;align-items:center;color:#cfcfcf"><input type="checkbox" id="onlyPaid" checked> Solo pagadas</label></div>
-      <div class="tbl"><table><thead><tr><th>Código</th><th>Personas</th><th>Entrada</th><th>Estado</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;
+      <div class="tbl"><table><thead><tr><th>Código</th><th>Reserva a nombre de</th><th>Entrada</th><th>Estado</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;
     const draw = () => {
       const q = $("#q").value.toLowerCase(), op = $("#onlyPaid").checked;
       const rows = valid.filter((t) => (!op || t.status === "Paid") && (t.code + " " + t.guests + " " + t.name).toLowerCase().includes(q));
