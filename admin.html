@@ -174,7 +174,8 @@ function render() {
   const v = $("#view"), { tickets = [], subscribers = [], quotes = [], visits = [] } = DATA || {};
   const day = (d) => new Date(d).toISOString().slice(0, 10), now = Date.now();
   const since = (days) => visits.filter((x) => now - new Date(x.created) < days * 864e5).length;
-  const valid = tickets.filter((t) => t.status !== "Cancelled");
+  const live = tickets.filter((t) => !t.archived), trash = tickets.filter((t) => t.archived);
+  const valid = live.filter((t) => t.status !== "Cancelled");
   const paid = valid.filter((t) => t.status === "Paid");
   const people = (arr) => arr.reduce((s, t) => s + (String(t.ticket_type).includes("VIP") ? 4 : 1) * Number(t.qty || 1), 0);
 
@@ -196,7 +197,7 @@ function render() {
         <div class="panel"><h2>Páginas más vistas</h2><ul class="list">${top(pages)}</ul></div>
       </div>
       <div class="grid2">
-        <div class="panel"><h2>Últimas compras</h2><ul class="list">${tickets.slice(-6).reverse().map((t) => `<li><span>${esc(t.name)} · ${t.qty} ${esc(t.ticket_type)}</span><span class="pill ${esc(t.status)}">${esc(t.status)}</span></li>`).join("") || '<li class="empty">Sin compras todavía</li>'}</ul></div>
+        <div class="panel"><h2>Últimas compras</h2><ul class="list">${live.slice(-6).reverse().map((t) => `<li><span>${esc(t.name)} · ${t.qty} ${esc(t.ticket_type)}</span><span class="pill ${esc(t.status)}">${esc(t.status)}</span></li>`).join("") || '<li class="empty">Sin compras todavía</li>'}</ul></div>
         <div class="panel"><h2>De dónde llegan</h2><ul class="list">${top(refs)}</ul></div>
       </div>`;
   }
@@ -205,12 +206,16 @@ function render() {
     v.innerHTML = `<div class="panel"><h2>Entradas</h2>
       <div class="tools"><input class="in" id="q" placeholder="Buscar nombre, correo o código">
         <select class="in" id="st"><option value="">Todos</option><option>Pending</option><option>Paid</option><option>Cancelled</option></select>
-        <button class="btn sm ghost" id="exp">Exportar CSV</button></div>
-      <p style="color:var(--muted);margin-bottom:10px">Compara cada compra con Venmo (@REntertainment100): la nota del pago trae el mismo código. Marca "Pagado" cuando llegue.</p>
+        <button class="btn sm ghost" id="exp">Exportar CSV</button>
+        <button class="btn sm ghost" id="arcAll">🗑 Canceladas a la papelera (${live.filter((t) => t.status === "Cancelled").length})</button>
+        <button class="btn sm ghost" id="trashT">🗑 Ver papelera (${trash.length})</button></div>
+      <p style="color:var(--muted);margin-bottom:10px">Compara cada compra con Venmo (@REntertainment100): la nota del pago trae el mismo código. Al marcar <b>"Pagado"</b> el cliente recibe su correo de confirmación automáticamente. La ✕ manda la compra a la papelera (queda registro, pero no cuenta).</p>
       <div class="tbl"><table><thead><tr><th>Código / fecha</th><th>Comprador</th><th>Entrada</th><th>Total</th><th>Reserva</th><th>Estado</th><th></th></tr></thead><tbody id="tb"></tbody></table></div></div>`;
+    let showTrash = false;
     const draw = () => {
       const q = $("#q").value.toLowerCase(), st = $("#st").value;
-      const rows = tickets.filter((t) => (!st || t.status === st) && JSON.stringify(t).toLowerCase().includes(q)).reverse();
+      $("#trashT").textContent = showTrash ? "← Volver a las compras" : `🗑 Ver papelera (${trash.length})`;
+      const rows = (showTrash ? trash : live).filter((t) => (!st || t.status === st) && JSON.stringify(t).toLowerCase().includes(q)).reverse();
       $("#tb").innerHTML = rows.map((t) => `<tr>
         <td><b>${esc(t.code)}</b><br><small>${fmt(t.created)}</small></td>
         <td>${esc(t.name)}<br><small>${esc(t.email)}<br>${esc(t.phone)}</small></td>
@@ -220,11 +225,23 @@ function render() {
         <td><div class="acts">
           ${t.status !== "Paid" ? `<button class="btn sm ok" data-a="paid" data-c="${esc(t.code)}">Pagado</button>` : `<button class="btn sm ghost" data-a="pending" data-c="${esc(t.code)}">Pendiente</button>`}
           ${t.status !== "Cancelled" ? `<button class="btn sm ghost" data-a="cancel" data-c="${esc(t.code)}">Cancelar</button>` : ""}
-        </div></td></tr>`).join("") || '<tr><td colspan="7" class="empty">Sin compras</td></tr>';
+          ${t.archived ? `<button class="btn sm ghost" data-a="restore" data-c="${esc(t.code)}">↩ Restaurar</button>` : `<button class="btn sm ghost" data-a="trash" data-c="${esc(t.code)}" title="Mandar a la papelera">✕</button>`}
+        </div></td></tr>`).join("") || `<tr><td colspan="7" class="empty">${showTrash ? "La papelera está vacía" : "Sin compras"}</td></tr>`;
     };
     $("#q").oninput = draw; $("#st").onchange = draw; $("#exp").onclick = () => csv(tickets, "rulitt-entradas.csv"); draw();
-    $("#tb").onclick = (e) => { const b = e.target.closest("[data-a]"); if (!b) return; b.textContent = "…";
-      act({ code: b.dataset.c, status: { paid: "Paid", pending: "Pending", cancel: "Cancelled" }[b.dataset.a] }); };
+    $("#trashT").onclick = () => { showTrash = !showTrash; draw(); };
+    $("#arcAll").onclick = async () => {
+      const n = live.filter((t) => t.status === "Cancelled").length; if (!n) return;
+      if (!confirm(`¿Mandar ${n} compras canceladas a la papelera?`)) return;
+      $("#arcAll").textContent = "…";
+      await fetch(`${API}?${new URLSearchParams({ key: KEY, action: "archive_cancelled" })}`); await load(); render();
+    };
+    $("#tb").onclick = (e) => { const b = e.target.closest("[data-a]"); if (!b) return;
+      const a = b.dataset.a;
+      if (a === "paid" && !confirm("¿Marcar como pagado? Se le enviará al cliente el correo de confirmación.")) return;
+      b.textContent = "…";
+      if (a === "trash" || a === "restore") return act({ code: b.dataset.c, archived: a === "trash" ? "1" : "0" });
+      act({ code: b.dataset.c, status: { paid: "Paid", pending: "Pending", cancel: "Cancelled" }[a] }); };
   }
 
   if (TAB === "door") {
