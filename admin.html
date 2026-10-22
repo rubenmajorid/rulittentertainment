@@ -75,6 +75,13 @@ td small{color:var(--muted)}
 .setup{max-width:640px;margin:40px auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
 .setup h2{font-size:2rem;margin-bottom:8px}.setup p,.setup li{color:#cfcfcf;margin-bottom:8px}.setup ol{padding-left:20px}
 @media (max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}.grid2,.cards{grid-template-columns:1fr}}
+.mail{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:grid;gap:6px;margin-bottom:12px;font-size:.82rem;color:#cfcfcf;font-weight:600}
+textarea.in{min-height:140px;resize:vertical}
+.preview{background:#000;border-radius:14px;padding:16px;max-height:720px;overflow:auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.note{color:var(--muted);font-size:.82rem}
+@media (max-width:860px){.mail{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -104,6 +111,7 @@ td small{color:var(--muted)}
         <button class="tab" data-t="tickets">Entradas</button>
         <button class="tab" data-t="door">Lista de puerta</button>
         <button class="tab" data-t="subs">Suscriptores</button>
+        <button class="tab" data-t="mail">📣 Email marketing</button>
         <button class="tab" data-t="quotes">Cotizaciones</button>
       </nav>
     </div>
@@ -239,13 +247,86 @@ function render() {
   }
 
   if (TAB === "subs") {
-    v.innerHTML = `<div class="panel"><h2>Suscriptores (${subscribers.length})</h2>
+    v.innerHTML = `<div class="panel"><h2>Suscriptores (${subscribers.filter((s) => !s.unsubscribed).length} activos)</h2>
       <div class="tools"><button class="btn sm ghost" id="copy">Copiar correos</button><button class="btn sm ghost" id="exp">Exportar CSV</button></div>
-      <div class="tbl"><table><thead><tr><th>Correo</th><th>Fecha</th><th>Idioma</th><th>Página</th></tr></thead><tbody>
-      ${subscribers.slice().reverse().map((s) => `<tr><td>${esc(s.email)}</td><td>${fmt(s.created)}</td><td>${esc(s.lang)}</td><td><small>${esc(s.page)}</small></td></tr>`).join("") || '<tr><td colspan="4" class="empty">Sin suscriptores todavía</td></tr>'}
+      <div class="tbl"><table><thead><tr><th>Correo</th><th>Nombre</th><th>Fecha</th><th>Idioma</th><th>Estado</th></tr></thead><tbody>
+      ${subscribers.slice().reverse().map((s) => `<tr><td>${esc(s.email)}</td><td>${esc(s.name)}</td><td>${fmt(s.created)}</td><td>${esc(s.lang)}</td><td>${s.unsubscribed ? '<span class="pill Cancelled">Dado de baja</span>' : '<span class="pill Paid">Activo</span>'}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">Sin suscriptores todavía</td></tr>'}
       </tbody></table></div></div>`;
     $("#exp").onclick = () => csv(subscribers, "rulitt-suscriptores.csv");
-    $("#copy").onclick = () => { navigator.clipboard.writeText(subscribers.map((s) => s.email).join(", ")); $("#copy").textContent = "¡Copiados!"; };
+    $("#copy").onclick = () => { navigator.clipboard.writeText(subscribers.filter((s) => !s.unsubscribed).map((s) => s.email).join(", ")); $("#copy").textContent = "¡Copiados!"; };
+  }
+
+  if (TAB === "mail") {
+    const active = subscribers.filter((s) => s.email && !s.unsubscribed);
+    const camps = (DATA.campaigns || []).slice().reverse();
+    v.innerHTML = `<div class="mail">
+      <div class="panel"><h2>📣 Enviar flyer a suscriptores</h2>
+        <p class="note" style="margin-bottom:12px">Se envía desde r.u.littentertainment@gmail.com a <b>${active.length}</b> suscriptores activos. Gmail permite unos <b>${DATA.quota ?? 100}</b> correos más hoy. Cada correo lleva su link para darse de baja.</p>
+        <label class="field">Asunto<input class="in" id="mSub" placeholder="🎃 El Apagón — Early Bird $20 · Viernes 30 de octubre"></label>
+        <label class="field">Imagen / flyer
+          <input class="in" type="file" id="mFile" accept="image/*">
+          <div class="chips"><button class="btn sm ghost" type="button" id="mApagon">Usar flyer de El Apagón</button><button class="btn sm ghost" type="button" id="mNoImg">Sin imagen</button></div></label>
+        <label class="field">Mensaje<textarea class="in" id="mMsg" placeholder="Escribe el mensaje… (puedes usar inglés y español)"></textarea></label>
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:8px">
+          <label class="field">Texto del botón<input class="in" id="mBtn" value="Get tickets"></label>
+          <label class="field">Link del botón<input class="in" id="mUrl" value="https://rulittentertainment.com/tickets.html"></label>
+        </div>
+        <div class="tools" style="margin-top:6px">
+          <input class="in" id="mTest" type="email" placeholder="Correo para prueba" style="max-width:240px">
+          <button class="btn sm ghost" id="mSendTest">Enviar prueba</button>
+          <button class="btn red" id="mSendAll">Enviar a ${active.length} suscriptores</button>
+        </div>
+        <p class="err" id="mMsgOut" style="color:#cfcfcf"></p>
+      </div>
+      <div class="panel"><h2>Vista previa</h2><div class="preview" id="mPrev"></div></div>
+    </div>
+    <div class="panel"><h2>Flyers enviados</h2><div class="tbl"><table><thead><tr><th>Fecha</th><th>Asunto</th><th>Enviados</th><th></th></tr></thead><tbody>
+      ${camps.map((c) => `<tr><td>${fmt(c.created)}</td><td>${esc(c.subject)}</td><td>${c.sent}</td><td>${c.test ? '<span class="pill Pending">Prueba</span>' : ""}</td></tr>`).join("") || '<tr><td colspan="4" class="empty">Todavía no se ha enviado ninguno</td></tr>'}
+    </tbody></table></div></div>`;
+
+    let img = "", imgData = "";
+    const prev = () => {
+      const msg = esc($("#mMsg").value).replace(/\n/g, "<br>"), btn = $("#mBtn").value, src = imgData || img;
+      $("#mPrev").innerHTML = `<div style="max-width:520px;margin:0 auto;background:#0d0d0d;border:1px solid #222;border-radius:14px;overflow:hidden;font-family:Arial;color:#f5f5f5">
+        <div style="text-align:center;padding:18px;font-size:24px;font-weight:800;letter-spacing:2px">R.U.LITT<div style="font-size:9px;letter-spacing:6px;color:#9a9a9a;font-weight:400">ENTERTAINMENT</div></div>
+        ${src ? `<img src="${src}" style="display:block;width:100%">` : ""}
+        <div style="padding:20px;font-size:14px;line-height:1.6;color:#e6e6e6">${msg || '<span style="color:#666">Tu mensaje aparece aquí…</span>'}</div>
+        ${btn ? `<div style="text-align:center;padding:0 20px 24px"><span style="display:inline-block;background:#d0021b;color:#fff;font-weight:700;padding:12px 24px;border-radius:999px">${esc(btn)}</span></div>` : ""}
+        <div style="text-align:center;padding:14px;border-top:1px solid #222;font-size:10px;color:#8a8a8a">R.U.LITT Entertainment · Idaho, USA · Unsubscribe / Darse de baja</div></div>`;
+    };
+    ["mMsg", "mBtn"].forEach((id) => ($("#" + id).oninput = prev));
+    $("#mApagon").onclick = () => { img = "https://rulittentertainment.com/media/events/apagon.jpg"; imgData = ""; $("#mFile").value = ""; prev(); };
+    $("#mNoImg").onclick = () => { img = ""; imgData = ""; $("#mFile").value = ""; prev(); };
+    $("#mFile").onchange = () => {   // shrink to max 1200px JPEG in the browser
+      const f = $("#mFile").files[0]; if (!f) return;
+      const im = new Image(); im.onload = () => {
+        const s = Math.min(1, 1200 / im.width), c = document.createElement("canvas");
+        c.width = Math.round(im.width * s); c.height = Math.round(im.height * s);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        imgData = c.toDataURL("image/jpeg", 0.82); img = ""; prev();
+      }; im.src = URL.createObjectURL(f);
+    };
+    prev();
+
+    const send = async (test) => {
+      const out = $("#mMsgOut"), subject = $("#mSub").value.trim();
+      if (!subject) { out.textContent = "Escribe el asunto."; return; }
+      if (!$("#mMsg").value.trim()) { out.textContent = "Escribe el mensaje."; return; }
+      if (test && !/@/.test(test)) { out.textContent = "Escribe un correo para la prueba."; return; }
+      if (!test && !confirm(`¿Enviar este flyer a ${active.length} suscriptores? No se puede deshacer.`)) return;
+      out.textContent = test ? "Enviando prueba…" : `Enviando a ${active.length}… (puede tardar un minuto)`;
+      try {
+        const r = await fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ kind: "campaign", key: KEY, subject, message: $("#mMsg").value, btnText: $("#mBtn").value.trim(), btnUrl: $("#mUrl").value.trim(), imageUrl: img, imageData: imgData, test: test || "" }) });
+        const j = await r.json();
+        if (!j.ok) { out.textContent = j.error === "quota" ? `Gmail solo permite ${j.quota} correos más hoy (necesitas ${j.needed}). Intenta mañana.` : "Error: " + j.error; return; }
+        if (j.image && imgData) { img = j.image; imgData = ""; }   // reuse the uploaded image next time
+        out.textContent = test ? `✅ Prueba enviada a ${test}. Revisa la bandeja (y Spam).` : `✅ Enviado a ${j.sent} suscriptores.`;
+        if (!test) { await load(); render(); }
+      } catch (err) { out.textContent = "No se pudo enviar. Revisa la conexión."; }
+    };
+    $("#mSendTest").onclick = () => send($("#mTest").value.trim());
+    $("#mSendAll").onclick = () => send("");
   }
 
   if (TAB === "quotes") {

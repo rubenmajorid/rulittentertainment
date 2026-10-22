@@ -501,26 +501,56 @@ document.addEventListener("play", (e) => {
   if (v) $$("#svcChecks input").forEach((i) => { if (i.value === v) i.checked = true; });
 })();
 
-/* ---------- newsletter subscribe (FormSubmit) ---------- */
+/* ---------- subscribe: footer form, home section and popup ---------- */
+function subscribed() { try { return !!localStorage.getItem("rulitt-sub"); } catch (e) { return false; } }
+document.addEventListener("submit", (e) => {
+  const f = e.target.closest("form[data-sub]"); if (!f) return;
+  e.preventDefault();
+  if (f._honey && f._honey.value) return;
+  const msg = f.querySelector(".sub-msg"), email = f.email.value.trim(), name = f.name ? f.name.value.trim() : "";
+  if (!f.email.checkValidity() || !email) { msg.className = "sub-msg err"; msg.textContent = t("Enter a valid email.", "Escribe un correo válido."); return; }
+  sendData("subscribe", { email, name, page: location.pathname });
+  if (CONFIG.formEndpoint) {
+    fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ email, name: name || "-", type: "Newsletter subscriber", language: lang.toUpperCase(), page: location.pathname, _subject: "New subscriber — R.U.LITT website", _template: "table" }) }).catch(() => {});
+  }
+  try { localStorage.setItem("rulitt-sub", "1"); } catch (err) {}
+  f.reset(); msg.className = "sub-msg ok";
+  msg.textContent = t("You're on the list! We'll let you know about new events and presales first.", "¡Ya estás en la lista! Te avisamos primero de nuevos eventos y preventas.");
+  if (f.closest("#subPop")) setTimeout(() => $("#subPop")?.classList.remove("show"), 2200);
+});
+
+/* Popup: once per visitor, after 18s or 60% scroll — never on admin/tickets checkout or if already subscribed */
 (() => {
-  const f = $("#subForm"); if (!f) return;
-  const msg = f.querySelector(".sub-msg");
-  f.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (f._honey.value) return;
-    const email = f.email.value.trim();
-    if (!f.email.checkValidity() || !email) { msg.className = "sub-msg err"; msg.textContent = t("Enter a valid email.", "Escribe un correo válido."); return; }
-    if (!CONFIG.formEndpoint) { msg.className = "sub-msg err"; msg.textContent = t("Coming soon.", "Muy pronto."); return; }
-    sendData("subscribe", { email, page: location.pathname });
-    const btn = f.querySelector("button"); btn.disabled = true;
-    try {
-      const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ email, type: "Newsletter subscriber", language: lang.toUpperCase(), page: location.pathname, _subject: "New subscriber — R.U.LITT website", _template: "table" }) });
-      if (!r.ok) throw new Error(r.status);
-      f.reset(); msg.className = "sub-msg ok"; msg.textContent = t("You're in! Thanks for subscribing.", "¡Listo! Gracias por suscribirte.");
-    } catch (err) { msg.className = "sub-msg err"; msg.textContent = t("Something went wrong. Try again.", "Algo salió mal. Intenta de nuevo."); }
-    btn.disabled = false;
-  });
+  if (/admin\.html$/.test(location.pathname) || subscribed()) return;
+  try { if (localStorage.getItem("rulitt-pop")) return; } catch (e) { return; }
+  const pop = document.createElement("div");
+  pop.id = "subPop"; pop.className = "sub-pop"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", "Subscribe");
+  const draw = () => {
+    pop.innerHTML = `<div class="sub-pop-card">
+      <button class="sub-pop-x" aria-label="Close">×</button>
+      <p class="kicker">R.U.LITT ${t("Events", "Eventos")}</p>
+      <h3>${t("Never miss a party", "No te pierdas ninguna fiesta")}</h3>
+      <p>${t("Be the first to know about new events, early-bird presales and VIP tables.", "Entérate primero de nuevos eventos, preventas Early Bird y mesas VIP.")}</p>
+      <form data-sub novalidate>
+        <input name="name" placeholder="${t("Your name", "Tu nombre")}" autocomplete="given-name">
+        <input name="email" type="email" required placeholder="${t("Your email", "Tu correo")}" autocomplete="email">
+        <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off">
+        <button class="btn btn-glow btn-block" type="submit">${t("Join the list", "Unirme a la lista")}</button>
+        <p class="sub-msg" role="status"></p>
+      </form></div>`;
+  };
+  draw(); document.body.appendChild(pop);
+  const close = () => { pop.classList.remove("show"); try { localStorage.setItem("rulitt-pop", "1"); } catch (e) {} };
+  pop.addEventListener("click", (e) => { if (e.target === pop || e.target.closest(".sub-pop-x")) close(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && pop.classList.contains("show")) close(); });
+  let shown = false;
+  const show = () => {
+    if (shown || subscribed() || $("#intro") || ($("#lightbox") && !$("#lightbox").hidden)) return;
+    shown = true; draw(); pop.classList.add("show"); try { localStorage.setItem("rulitt-pop", "1"); } catch (e) {}
+  };
+  setTimeout(show, 18000);
+  addEventListener("scroll", () => { if (scrollY > (document.body.scrollHeight - innerHeight) * 0.6) show(); }, { passive: true });
 })();
 
 /* Event announcement bar: hide after the event */
