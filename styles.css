@@ -644,3 +644,15 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .theme-halloween .hero-title .grad{animation:hwFlicker 6s infinite}
 @keyframes hwFlicker{0%,19%,21%,62%,64%,100%{opacity:1}20%,63%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.theme-halloween .hero-title .grad{animation:none}}
+
+/* ---- ticket types ---- */
+.tix-tiers-fs{border:0}
+.tix-tiers-fs legend{font-size:.82rem;font-weight:600;color:#cfcfcf;margin-bottom:8px}
+.tix-tiers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tix-tier{position:relative;display:flex!important;flex-direction:column;gap:2px!important;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#0a0a0a;cursor:pointer;transition:border-color .2s,background .2s}
+.tix-tier input{position:absolute;opacity:0;pointer-events:none}
+.tix-tier:has(input:checked){border-color:#ff2a3d;background:rgba(208,2,27,.14);box-shadow:0 0 0 1px #ff2a3d inset}
+.tt-name{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#cfcfcf}
+.tt-price{font-family:var(--display);font-size:2.2rem;line-height:1;color:#fff}
+.tix-door{grid-column:1/-1;font-size:.82rem;color:var(--muted);margin-top:2px}
+.tix-door b{color:#fff}

@@ -66,6 +66,8 @@
         <li><b data-es="Hora">Time</b><span>9 PM – 2 AM</span></li>
         <li><b data-es="Lugar">Venue</b><span>La Cabañita at The Mint<br>116 S. Main St., Hailey, ID 83333</span></li>
         <li><b data-es="Edad">Age</b><span data-es="21+ con identificación válida">21+ with valid ID</span></li>
+        <li><b data-es="Precios">Prices</b><span data-es="Early Bird $20 · En la puerta $30 · VIP $150">Early Bird $20 · At the door $30 · VIP $150</span></li>
+        <li><b data-es="Disfraz">Costume</b><span data-es="Recomendado, no obligatorio 🎃">Recommended, not required 🎃</span></li>
       </ul>
       <ul class="tix-tags">
         <li data-es="Especiales de bebidas">Drink specials</li><li data-es="Juegos">Games</li><li data-es="Cabina 360">360 Photo Booth</li><li data-es="Pastel">Cake</li><li>Jell-O shots</li>
@@ -96,7 +98,7 @@
     </div>
 
     <form class="qform tix-form" id="tixForm" novalidate>
-      <div class="tix-price"><span data-es="Entrada general">General admission</span><strong id="tixUnit">—</strong></div>
+      <fieldset class="tix-tiers-fs"><legend data-es="Tipo de entrada *">Ticket type *</legend><div class="tix-tiers" id="tixTiers"></div></fieldset>
       <label><span data-es="Nombre completo *">Full name *</span><input name="name" required autocomplete="name"></label>
       <div class="row2">
         <label><span data-es="Correo *">Email *</span><input name="email" type="email" required autocomplete="email"></label>
