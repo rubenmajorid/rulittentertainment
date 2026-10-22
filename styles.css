@@ -662,3 +662,10 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .tix-guests-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .tix-guests-g input{width:100%;font:inherit;font-size:.9rem;color:var(--text);background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:.7em .9em;color-scheme:dark}
 @media (max-width:560px){.tix-guests-g{grid-template-columns:1fr}}
+
+/* ---- limited tickets badge ---- */
+.limited{display:inline-flex;align-items:center;gap:10px;margin:-6px 0 16px;padding:.45em 1.1em;border-radius:999px;background:#d0021b;color:#fff;font-weight:800;font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;box-shadow:0 0 0 0 rgba(208,2,27,.7);animation:limPulse 2s infinite}
+.limited .dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:limBlink 1s infinite}
+@keyframes limPulse{0%{box-shadow:0 0 0 0 rgba(208,2,27,.7)}70%{box-shadow:0 0 0 14px rgba(208,2,27,0)}100%{box-shadow:0 0 0 0 rgba(208,2,27,0)}}
+@keyframes limBlink{50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.limited,.limited .dot{animation:none}}
