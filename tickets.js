@@ -8,8 +8,8 @@ const EVENT = {
   venue: "La Cabañita at The Mint, 116 S. Main St., Hailey, ID",
   venmoUser: "REntertainment100",       // venmo.com/u/REntertainment100 (business)
   tiers: [                               // sold online
-    { id: "EB",  en: "Early Bird", es: "Early Bird (preventa)", price: 20 },
-    { id: "VIP", en: "VIP",        es: "VIP",                   price: 150 },
+    { id: "EB",  en: "Early Bird", es: "Early Bird (preventa)", price: 20, people: 1, noteEn: "1 person", noteEs: "1 persona" },
+    { id: "VIP", en: "VIP Table",  es: "Mesa VIP",              price: 150, people: 4, noteEn: "Table for 4 + bottle of Patrón", noteEs: "Mesa para 4 + botella de Patrón" },
   ],
   doorPrice: 30,                         // shown as info only (paid at the door)
   maxPerOrder: 10,
@@ -32,8 +32,16 @@ const EVENT = {
     const cur = form.tier?.value || EVENT.tiers[0].id;
     $("#tixTiers").innerHTML = EVENT.tiers.map((x) => `
       <label class="tix-tier"><input type="radio" name="tier" value="${x.id}"${x.id === cur ? " checked" : ""}>
-        <span class="tt-name">${t(x.en, x.es)}</span><span class="tt-price">${money(x.price)}</span></label>`).join("")
+        <span class="tt-name">${t(x.en, x.es)}</span><span class="tt-price">${money(x.price)}</span><span class="tt-note">${t(x.noteEn, x.noteEs)}</span></label>`).join("")
       + `<p class="tix-door">${t("At the door", "En la puerta")}: <b>${money(EVENT.doorPrice)}</b> · ${t("buy online and save", "compra en línea y ahorra")}</p>`;
+  };
+  const renderGuests = () => {
+    const tr = tier(), n = Math.max(0, (parseInt(qty.value, 10) || 1) * tr.people - 1);
+    const box = $("#tixGuests"), old = $$("input", box).map((i) => i.value);
+    if (!n) { box.innerHTML = ""; return; }
+    box.innerHTML = `<p class="tix-guests-t">${t("Guest names (for the door list)", "Nombres de tus invitados (para la lista de la puerta)")}</p>
+      <div class="tix-guests-g">${Array.from({ length: n }, (_, i) => `<input name="guest" placeholder="${t("Guest", "Invitado")} ${i + 2}" value="${esc(old[i] || "")}" autocomplete="off">`).join("")}</div>
+      <p class="tix-note">${t("Optional, but it makes check-in faster. Everyone needs a valid ID.", "Opcional, pero agiliza la entrada. Todos necesitan ID válida.")}</p>`;
   };
   const fillUser = () => $$(".tix-note").forEach((p) => {
     if (p.textContent.includes("@USER")) p.textContent = p.textContent.replace("@USER", "@" + EVENT.venmoUser);
@@ -42,6 +50,7 @@ const EVENT = {
     const q = Math.max(1, Math.min(EVENT.maxPerOrder, parseInt(qty.value, 10) || 1));
     qty.value = q;
     $("#tixTotal").textContent = money(tier().price * q);
+    renderGuests();
   };
   const closedMsg = () => {
     $("#tixMsg").className = "form-msg err";
@@ -74,7 +83,8 @@ const EVENT = {
     update();
     const tr = tier(), q = +qty.value, total = tr.price * q;
     const code = `${EVENT.id}-${tr.id}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-    const order = { code, tier: tr.id, tierName: tr.en, unit: tr.price, name: form.name.value.trim(), email: form.email.value.trim(), phone: form.phone.value.trim(), qty: q, total };
+    const guests = $$("#tixGuests input").map((i) => i.value.trim()).filter(Boolean);
+    const order = { guests, code, tier: tr.id, tierName: tr.en, unit: tr.price, name: form.name.value.trim(), email: form.email.value.trim(), phone: form.phone.value.trim(), qty: q, total };
     const btn = $("#tixBtn"); btn.disabled = true;
 
     // Send the reservation to R.U.LITT's email (FormSubmit) so they can match it with Venmo payments
@@ -83,9 +93,11 @@ const EVENT = {
         await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
           body: JSON.stringify({ _subject: `TICKET ${code} — ${order.name} — ${q} × ${tr.en} ${money(tr.price)} = ${money(total)}`, _template: "table",
             type: "Event ticket (pending Venmo payment)", event: EVENT.name, ticket_type: tr.en, code, name: order.name, email: order.email, phone: order.phone,
-            tickets: q, total: money(total), venmo_to: "@" + EVENT.venmoUser, language: lang.toUpperCase() }) });
+            tickets: q, people: q * tr.people, guests: guests.join(", ") || "-", total: money(total), venmo_to: "@" + EVENT.venmoUser, language: lang.toUpperCase() }) });
       } catch (err) { /* still let them pay; the Venmo note carries the code */ }
     }
+    sendData("ticket", { code, event: EVENT.name, ticket_type: tr.en, qty: q, unit: tr.price, total, name: order.name, email: order.email, phone: order.phone,
+      guests: [order.name].concat(guests).join(", ") });
     try { localStorage.setItem("rulitt-ticket-" + EVENT.id, JSON.stringify(order)); } catch (e) {}
     btn.disabled = false;
     showDone(order);

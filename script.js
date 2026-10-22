@@ -10,6 +10,7 @@ const CONFIG = {
   hoursEN: "",          // e.g. "Mon–Sat 10am–8pm"
   hoursES: "",          // e.g. "Lun–Sáb 10am–8pm"
   formEndpoint: "https://formsubmit.co/ajax/r.u.littentertainment@gmail.com", // swap for the hashed endpoint after activation
+  dataEndpoint: "",     // Google Apps Script web app URL (…/exec) — feeds admin.html
   instagram: "",        // full URL
   facebook: "",
   tiktok: "",
@@ -323,6 +324,16 @@ function observeReveal() {
   $$(".reveal:not(.in)").forEach((el) => io.observe(el));
 }
 
+
+/* ---------- Send a copy to the admin panel (Google Sheet via Apps Script) ---------- */
+function sendData(kind, payload) {
+  if (!CONFIG.dataEndpoint) return;
+  try {
+    fetch(CONFIG.dataEndpoint, { method: "POST", mode: "no-cors", keepalive: true,
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ kind, lang, ...payload }) });
+  } catch (e) {}
+}
+
 /* ---------- quote form ---------- */
 const form = $("#quoteForm");
 const msg = $("#formMsg");
@@ -343,6 +354,7 @@ form.addEventListener("submit", async (e) => {
   data._subject = `New ${data.event_type} inquiry — ${data.event_date} — ${data.name}`;
   data._template = "table";
 
+  sendData("quote", data);
   const btn = form.querySelector("button[type=submit]");
   btn.disabled = true;
 
@@ -499,6 +511,7 @@ document.addEventListener("play", (e) => {
     const email = f.email.value.trim();
     if (!f.email.checkValidity() || !email) { msg.className = "sub-msg err"; msg.textContent = t("Enter a valid email.", "Escribe un correo válido."); return; }
     if (!CONFIG.formEndpoint) { msg.className = "sub-msg err"; msg.textContent = t("Coming soon.", "Muy pronto."); return; }
+    sendData("subscribe", { email, page: location.pathname });
     const btn = f.querySelector("button"); btn.disabled = true;
     try {
       const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -534,4 +547,13 @@ document.addEventListener("play", (e) => {
     out.textContent = t(`Starts in ${d}d ${h}h`, `Empieza en ${d}d ${h}h`);
   };
   tick(); setInterval(tick, 60000);
+})();
+
+/* Page visit counter (no cookies, no IP stored) */
+(() => {
+  const k = "rulitt-v-" + location.pathname;
+  try { if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, "1"); } catch (e) {}
+  if (/admin\.html$/.test(location.pathname)) return;
+  sendData("visit", { page: location.pathname.replace(/\/$/, "/index.html") || "/index.html", referrer: (document.referrer || "").split("/")[2] || "direct",
+    device: matchMedia("(max-width: 820px)").matches ? "mobile" : "desktop" });
 })();

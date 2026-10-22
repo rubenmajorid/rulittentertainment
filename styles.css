@@ -656,3 +656,9 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .tt-price{font-family:var(--display);font-size:2.2rem;line-height:1;color:#fff}
 .tix-door{grid-column:1/-1;font-size:.82rem;color:var(--muted);margin-top:2px}
 .tix-door b{color:#fff}
+
+.tt-note{font-size:.75rem;color:#cfcfcf;margin-top:4px}
+.tix-guests-t{font-size:.82rem;font-weight:600;color:#cfcfcf;margin-bottom:8px}
+.tix-guests-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tix-guests-g input{width:100%;font:inherit;font-size:.9rem;color:var(--text);background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:.7em .9em;color-scheme:dark}
+@media (max-width:560px){.tix-guests-g{grid-template-columns:1fr}}
