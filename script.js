@@ -586,3 +586,14 @@ document.addEventListener("submit", (e) => {
   sendData("visit", { page: location.pathname.replace(/\/$/, "/index.html") || "/index.html", referrer: (document.referrer || "").split("/")[2] || "direct",
     device: matchMedia("(max-width: 820px)").matches ? "mobile" : "desktop" });
 })();
+
+/* R.U.LITT Pick: load the official Spotify player on click (third-party embed); pause our background music when it's used */
+(() => {
+  const btn = $("#pickLoad"); if (!btn) return;
+  btn.addEventListener("click", () => {
+    const box = $("#pickPlayer");
+    box.innerHTML = `<iframe title="Spotify: Dame Hombro" src="${box.dataset.src}" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
+    $("#bgMusic")?.pause();
+    addEventListener("blur", () => { if (document.activeElement && document.activeElement.tagName === "IFRAME") $("#bgMusic")?.pause(); });
+  });
+})();
