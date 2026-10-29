@@ -239,6 +239,7 @@ function render() {
     $("#tb").onclick = (e) => { const b = e.target.closest("[data-a]"); if (!b) return;
       const a = b.dataset.a;
       if (a === "paid" && !confirm("¿Marcar como pagado? Se le enviará al cliente el correo de confirmación.")) return;
+      if (a === "cancel" && !confirm("¿Cancelar esta reserva? Se le enviará al cliente un correo avisando la cancelación.")) return;
       b.textContent = "…";
       if (a === "trash" || a === "restore") return act({ code: b.dataset.c, archived: a === "trash" ? "1" : "0" });
       act({ code: b.dataset.c, status: { paid: "Paid", pending: "Pending", cancel: "Cancelled" }[a] }); };
