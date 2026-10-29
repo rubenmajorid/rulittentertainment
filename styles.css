@@ -699,11 +699,3 @@ body.has-event-bar .hero{padding-top:calc(120px + var(--bar-h))}
 .tix-manual a{text-decoration:underline}
 
 .tix-web-btn{margin-top:10px;border-color:rgba(0,140,255,.6)}
-
-/* ---- R.U.LITT pick ---- */
-.pick{padding:clamp(50px,7vw,80px) 0;border-top:1px solid var(--line)}
-.pick-in{display:grid;grid-template-columns:1fr 1.2fr;gap:30px;align-items:center}
-.pick .h2{margin-bottom:6px}
-.pick-player{min-height:152px;display:grid;place-items:center;border:1px solid var(--line);border-radius:14px;background:#0a0a0a}
-.pick-player iframe{width:100%;border-radius:12px;display:block}
-@media (max-width:820px){.pick-in{grid-template-columns:1fr}}
