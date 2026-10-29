@@ -13,7 +13,7 @@ const EVENT = {
   ],
   doorPrice: 30,                         // shown as info only (paid at the door)
   maxPerOrder: 10,
-  flyer: "media/events/apagon.jpg",
+  flyer: "media/events/apagon-v2.jpg",
   salesEnd: "2026-10-31T02:00:00-06:00", // sales close automatically after this
 };
 
