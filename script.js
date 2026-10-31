@@ -586,3 +586,12 @@ document.addEventListener("submit", (e) => {
   sendData("visit", { page: location.pathname.replace(/\/$/, "/index.html") || "/index.html", referrer: (document.referrer || "").split("/")[2] || "direct",
     device: matchMedia("(max-width: 820px)").matches ? "mobile" : "desktop" });
 })();
+
+/* El Apagón is over: after 6:00 AM (Panama) Oct 31 remove every trace of the event and send tickets.html to home */
+(() => {
+  if (Date.now() < new Date("2026-10-31T06:00:00-05:00").getTime()) return;
+  $$(".nav-tix").forEach((a) => a.remove());
+  $("#eventBar")?.remove(); $("#event")?.remove();
+  document.body.classList.remove("has-event-bar");
+  if (/tickets\.html$/.test(location.pathname)) location.replace("index.html");
+})();
