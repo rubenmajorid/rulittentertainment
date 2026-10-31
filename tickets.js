@@ -14,7 +14,7 @@ const EVENT = {
   doorPrice: 30,                         // shown as info only (paid at the door)
   maxPerOrder: 10,
   flyer: "media/events/apagon-v2.jpg",
-  salesEnd: "2026-10-31T02:00:00-06:00", // sales close automatically after this
+  salesEnd: "2026-10-29T00:00:00-06:00", // presale ended — tickets only at the door
 };
 
 (() => {
@@ -64,7 +64,21 @@ const EVENT = {
   qty.addEventListener("input", update);
   $("#langBtn")?.addEventListener("click", () => setTimeout(() => { renderTiers(); fillUser(); update(); if (!open) closedMsg(); }, 0));
   renderTiers(); fillUser(); update();
-  if (!open) { closedMsg(); $("#tixBtn").disabled = true; }
+  if (!open) {
+    closedMsg(); $("#tixBtn").disabled = true;
+    if (Date.now() >= new Date(EVENT.salesEnd).getTime()) {
+      form.hidden = true; $("#tixDone").hidden = true;
+      const box = document.createElement("div");
+      box.className = "tix-door-only";
+      const draw = () => box.innerHTML = `<p class="kicker">${t("Online presale is over", "La preventa en línea terminó")}</p>
+        <h3>${t("Tickets available at the door only", "Entradas disponibles solo en la puerta")}</h3>
+        <p class="tix-door-price">$30</p>
+        <p>${t("Friday, October 30 · 9 PM – 2 AM · La Cabañita at The Mint, 116 S. Main St., Hailey, ID", "Viernes 30 de octubre · 9 PM – 2 AM · La Cabañita at The Mint, 116 S. Main St., Hailey, ID")}</p>
+        <p class="tix-note">${t("21+ with valid ID. Already bought online? Show your code and ID at the door.", "21+ con ID válida. ¿Ya compraste en línea? Muestra tu código y tu ID en la puerta.")}</p>`;
+      draw(); form.parentNode.insertBefore(box, form);
+      $("#langBtn")?.addEventListener("click", () => setTimeout(draw, 0));
+    }
+  }
 
   // Resume a pending order after a reload
   try { const saved = JSON.parse(localStorage.getItem("rulitt-ticket-" + EVENT.id) || "null"); if (saved && saved.tier && open) showDone(saved); } catch (e) {}
